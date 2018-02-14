@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="pt-BR">
+  <Title Visible="false" Text="Dashboard" />
+  <DataSources>
+    <SqlDataSource ComponentName="dashboardSqlDataSource1">
+      <Name>Fonte de dados SQL 1</Name>
+      <Connection Name="localhost_CURSOBI_Connection" ProviderKey="Postgres">
+        <Parameters>
+          <Parameter Name="server" Value="localhost" />
+          <Parameter Name="database" Value="CURSOBI" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="Port" Value="5432" />
+          <Parameter Name="userid" Value="postgres" />
+          <Parameter Name="password" Value="black" />
+        </Parameters>
+      </Connection>
+      <Query Type="TableQuery" Name="dimensional_fatovendas">
+        <Table Name="dimensional.fatovendas">
+          <Column Name="quantidade" />
+          <Column Name="valorunitario" />
+          <Column Name="valortotal" />
+          <Column Name="desconto" />
+        </Table>
+        <Table Name="dimensional.dimensaovendedor">
+          <Column Name="nome" />
+        </Table>
+        <Table Name="dimensional.dimensaotempo">
+          <Column Name="data" />
+        </Table>
+        <Table Name="dimensional.dimensaoproduto">
+          <Column Name="produto" />
+        </Table>
+        <Table Name="dimensional.dimensaocliente">
+          <Column Name="cliente" />
+        </Table>
+        <Relation Type="Inner" Parent="dimensional.fatovendas" Nested="dimensional.dimensaovendedor">
+          <KeyColumn Parent="chavevendedor" Nested="chavevendedor" />
+        </Relation>
+        <Relation Type="Inner" Parent="dimensional.fatovendas" Nested="dimensional.dimensaotempo">
+          <KeyColumn Parent="chavetempo" Nested="chavetempo" />
+        </Relation>
+        <Relation Type="Inner" Parent="dimensional.fatovendas" Nested="dimensional.dimensaoproduto">
+          <KeyColumn Parent="chaveproduto" Nested="chaveproduto" />
+        </Relation>
+        <Relation Type="Inner" Parent="dimensional.fatovendas" Nested="dimensional.dimensaocliente">
+          <KeyColumn Parent="chavecliente" Nested="chavecliente" />
+        </Relation>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Fonte de dados SQL 1">
+          <View Name="dimensional_fatovendas">
+            <Field Name="quantidade" Type="Int32" />
+            <Field Name="valorunitario" Type="Decimal" />
+            <Field Name="valortotal" Type="Decimal" />
+            <Field Name="desconto" Type="Decimal" />
+            <Field Name="nome" Type="String" />
+            <Field Name="data" Type="DateTime" />
+            <Field Name="produto" Type="String" />
+            <Field Name="cliente" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Vendas" DataSource="dashboardSqlDataSource1" DataMember="dimensional_fatovendas">
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Measure DataMember="valortotal" UniqueName="DataItem0" />
+        <Measure DataMember="desconto" UniqueName="DataItem1" />
+        <Measure DataMember="quantidade" UniqueName="DataItem2" />
+        <Dimension DataMember="data" DateTimeGroupInterval="Month" UniqueName="DataItem3" />
+        <Dimension DataMember="produto" UniqueName="DataItem4" />
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem3" />
+        <Argument UniqueName="DataItem4" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Painel 1">
+          <Series>
+            <Simple Name="Total de Vendas">
+              <Value UniqueName="DataItem0" />
+            </Simple>
+            <Simple Name="Desconto">
+              <Value UniqueName="DataItem1" />
+            </Simple>
+            <Simple Name="Quantidade" PlotOnSecondaryAxis="true">
+              <Value UniqueName="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Pie ComponentName="pieDashboardItem1" Name="maiores clientes" DataSource="dashboardSqlDataSource1" DataMember="dimensional_fatovendas">
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Measure DataMember="valortotal" Name="Vendas" UniqueName="DataItem0" />
+        <Dimension DataMember="cliente" TopNEnabled="true" TopNMeasure="DataItem0" UniqueName="DataItem1" />
+        <Dimension DataMember="produto" UniqueName="DataItem2" />
+      </DataItems>
+      <Arguments>
+        <Argument UniqueName="DataItem1" />
+        <Argument UniqueName="DataItem2" />
+      </Arguments>
+      <Values>
+        <Value UniqueName="DataItem0" />
+      </Values>
+    </Pie>
+    <Pivot ComponentName="pivotDashboardItem1" Name="Vendedores" DataSource="dashboardSqlDataSource1" DataMember="dimensional_fatovendas">
+      <DataItems>
+        <Measure DataMember="valortotal" Name="Total de vendas" UniqueName="DataItem0" />
+        <Measure DataMember="desconto" Name="Descontos" UniqueName="DataItem1" />
+        <Dimension DataMember="data" DateTimeGroupInterval="Month" UniqueName="DataItem2" />
+        <Dimension DataMember="nome" UniqueName="DataItem3" />
+      </DataItems>
+      <Columns>
+        <Column UniqueName="DataItem2" />
+      </Columns>
+      <Rows>
+        <Row UniqueName="DataItem3" />
+      </Rows>
+      <Values>
+        <Value UniqueName="DataItem0" />
+        <Value UniqueName="DataItem1" />
+      </Values>
+    </Pivot>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical">
+      <LayoutGroup Weight="50">
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="56.950973807924782" />
+        <LayoutItem DashboardItem="pieDashboardItem1" Weight="43.049026192075218" />
+      </LayoutGroup>
+      <LayoutItem DashboardItem="pivotDashboardItem1" Weight="50" />
+    </LayoutGroup>
+  </LayoutTree>
+  <business ispublicdashboard="1" chartcolorpalettes="&lt;paletteinfo&gt;&lt;chart name=&quot;chartDashboardItem1&quot; palettename=&quot;Default&quot;&gt;&lt;paletterepository /&gt;&lt;/chart&gt;&lt;chart name=&quot;pieDashboardItem1&quot; palettename=&quot;Default&quot;&gt;&lt;paletterepository /&gt;&lt;/chart&gt;&lt;/paletteinfo&gt;" pivotgrandtotals="[]" allowdashboardexport="" defaultfilter="" />
+</Dashboard>

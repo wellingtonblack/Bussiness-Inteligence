@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="pt-BR">
+  <Title Visible="false" Text="Dashboard" />
+  <DataSources>
+    <SqlDataSource ComponentName="dashboardSqlDataSource1">
+      <Name>Fonte de dados SQL 1</Name>
+      <Connection Name="localhost_CURSOBI_Connection" ProviderKey="Postgres">
+        <Parameters>
+          <Parameter Name="server" Value="localhost" />
+          <Parameter Name="database" Value="CURSOBI" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="Port" Value="5432" />
+          <Parameter Name="userid" Value="postgres" />
+          <Parameter Name="password" Value="black" />
+        </Parameters>
+      </Connection>
+      <Query Type="TableQuery" Name="dimensional_kpi">
+        <Table Name="dimensional.kpi">
+          <Column Name="Mes" />
+          <Column Name="Realizado" />
+          <Column Name="meta" />
+        </Table>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Fonte de dados SQL 1">
+          <View Name="dimensional_kpi">
+            <Field Name="Mes" Type="Int32" />
+            <Field Name="Realizado" Type="Decimal" />
+            <Field Name="meta" Type="Decimal" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Gauge ComponentName="gaugeDashboardItem1" Name="Vendas" DataSource="dashboardSqlDataSource1" DataMember="dimensional_kpi">
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Measure DataMember="Realizado" UniqueName="DataItem0" />
+        <Measure DataMember="meta" UniqueName="DataItem1" />
+        <Dimension DataMember="Mes" UniqueName="DataItem2" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension UniqueName="DataItem2" />
+      </SeriesDimensions>
+      <GaugeElement>
+        <ActualValue UniqueName="DataItem0" />
+        <TargetValue UniqueName="DataItem1" />
+      </GaugeElement>
+    </Gauge>
+    <Card ComponentName="cardDashboardItem1" Name="Vendas" DataSource="dashboardSqlDataSource1" DataMember="dimensional_kpi">
+      <DataItems>
+        <Measure DataMember="meta" UniqueName="DataItem0" />
+        <Measure DataMember="Realizado" UniqueName="DataItem1" />
+      </DataItems>
+      <Card Name="Anual">
+        <TargetValue UniqueName="DataItem0" />
+        <ActualValue UniqueName="DataItem1" />
+      </Card>
+    </Card>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="gaugeDashboardItem1" Weight="78.576225654801874" />
+      <LayoutItem DashboardItem="cardDashboardItem1" Weight="21.423774345198119" />
+    </LayoutGroup>
+  </LayoutTree>
+  <business ispublicdashboard="1" chartcolorpalettes="&lt;paletteinfo /&gt;" pivotgrandtotals="[]" allowdashboardexport="" defaultfilter="" />
+</Dashboard>
